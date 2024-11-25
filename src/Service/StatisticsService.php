@@ -1,41 +1,62 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
+use App\Entity\Developer;
+use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;
 
 class StatisticsService
 {
-    private $conn;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        $this->conn = $entityManager->getConnection();
     }
 
     public function getTotalProjects(): int
     {
-        $sql = 'SELECT COUNT(*) AS total_projects FROM project';
-        $result = $this->conn->fetchAssociative($sql);
-        return (int)$result['total_projects'];
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder
+            ->select('COUNT(p.id)')
+            ->from(Project::class, 'p');
+
+        $result = $queryBuilder->getQuery()->getSingleScalarResult();
+
+        return (int) $result;
     }
 
     public function getTotalDevelopers(): int
     {
-        $sql = 'SELECT COUNT(*) AS total_developers FROM developer';
-        $result = $this->conn->fetchAssociative($sql);
-        return (int)$result['total_developers'];
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder
+            ->select('COUNT(d.id)')
+            ->from(Developer::class, 'd');
+
+        $result = $queryBuilder->getQuery()->getSingleScalarResult();
+
+        return (int) $result;
     }
 
     public function getDevelopersByProject(): array
     {
-        $sql = 'SELECT project_id, COUNT(*) AS total_developers FROM developer GROUP BY project_id';
-        return $this->conn->fetchAllAssociative($sql);
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder
+            ->select('d.project, COUNT(d.id) AS total_developers')
+            ->from(Developer::class, 'd')
+            ->groupBy('d.project');
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
     public function getProjectsByCustomer(): array
     {
-        $sql = 'SELECT customer, COUNT(*) AS total_projects FROM project GROUP BY customer';
-        return $this->conn->fetchAllAssociative($sql);
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder
+            ->select('p.customer, COUNT(p.id) AS total_projects')
+            ->from(Project::class, 'p')
+            ->groupBy('p.customer');
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }

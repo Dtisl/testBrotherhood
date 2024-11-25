@@ -1,24 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
-use App\DTO\DeveloperDTO;
+use App\Dto\DeveloperDTO;
 use App\Entity\Developer;
 use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DeveloperService
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     public function createDeveloper(DeveloperDTO $developerDTO): Developer
     {
-        $project = $developerDTO->getProject();
+        $project = $this->entityManager->getRepository(Project::class)->find($developerDTO->getProjectId());
+
+        if (!$project) {
+            throw new NotFoundHttpException('Project does not exist');
+        }
 
         $developer = new Developer();
         $developer->setFullName($developerDTO->getFullName());
@@ -33,20 +37,52 @@ class DeveloperService
         return $developer;
     }
 
-    public function transferDeveloperToProject(Developer $developer, Project $newProject): void
+    public function transferDeveloperToProject(int $developerId, ?int $newProjectId): void
     {
+        $developer = $this->entityManager->getRepository(Developer::class)->find($developerId);
+
+        if (!$developer) {
+            throw new NotFoundHttpException('Developer not found');
+        }
+
+        if (!$newProjectId) {
+            throw new \InvalidArgumentException('New project ID is required');
+        }
+
+        $newProject = $this->entityManager->getRepository(Project::class)->find($newProjectId);
+
+        if (!$newProject) {
+            throw new NotFoundHttpException('New project not found');
+        }
+
         $developer->setProject($newProject);
         $this->entityManager->flush();
     }
 
-    public function updateDeveloperPosition(Developer $developer, string $newPosition): void
+    public function updateDeveloperPosition(int $developerId, ?string $newPosition): void
     {
+        $developer = $this->entityManager->getRepository(Developer::class)->find($developerId);
+
+        if (!$developer) {
+            throw new NotFoundHttpException('Developer not found');
+        }
+
+        if (!$newPosition) {
+            throw new \InvalidArgumentException('Position is required');
+        }
+
         $developer->setPosition($newPosition);
         $this->entityManager->flush();
     }
 
-    public function dismissDeveloperFromProject(Developer $developer): void
+    public function dismissDeveloperFromProject(int $developerId): void
     {
+        $developer = $this->entityManager->getRepository(Developer::class)->find($developerId);
+
+        if (!$developer) {
+            throw new NotFoundHttpException('Developer not found');
+        }
+
         $developer->setProject(null);
         $this->entityManager->flush();
     }

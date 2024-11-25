@@ -1,18 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
-use App\DTO\ProjectDTO;
+use App\Dto\ProjectDTO;
 use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProjectService
 {
-    private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     public function createProject(ProjectDTO $projectDTO): Project

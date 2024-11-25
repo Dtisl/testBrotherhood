@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\DTO\ProjectDTO;
+use App\Dto\ProjectDTO;
 use App\Entity\Project;
 use App\Service\ProjectService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,11 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProjectController extends AbstractController
 {
-    private $projectService;
-
-    public function __construct(ProjectService $projectService)
+    public function __construct(private readonly ProjectService $projectService)
     {
-        $this->projectService = $projectService;
     }
 
     #[Route('/project/create', name: 'project_create', methods: ['POST'])]

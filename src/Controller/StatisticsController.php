@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Service\StatisticsService;
@@ -9,11 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class StatisticsController extends AbstractController
 {
-    private $statisticsService;
-
-    public function __construct(StatisticsService $statisticsService)
+    public function __construct(private readonly StatisticsService $statisticsService)
     {
-        $this->statisticsService = $statisticsService;
     }
 
     #[Route('/statistics/projects', name: 'statistics_projects', methods: ['GET'])]

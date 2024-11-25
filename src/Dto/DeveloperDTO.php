@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTO;
+namespace App\Dto;
 
 use App\Entity\Project;
 
@@ -10,21 +10,21 @@ class DeveloperDTO
     private string $email;
     private string $position;
     private string $contactPhone;
-    private Project $project;
+    private int $projectId;
 
     public function __construct(
-        string  $fullName,
-        string  $email,
-        string  $position,
-        string  $contactPhone,
-        Project $project
+        string $fullName,
+        string $email,
+        string $position,
+        string $contactPhone,
+        int $projectId
     )
     {
         $this->fullName = $fullName;
         $this->email = $email;
         $this->position = $position;
         $this->contactPhone = $contactPhone;
-        $this->project = $project;
+        $this->projectId = $projectId;
     }
 
     public function getFullName(): string
@@ -47,8 +47,8 @@ class DeveloperDTO
         return $this->contactPhone;
     }
 
-    public function getProject(): Project
+    public function getProjectId(): int
     {
-        return $this->project;
+        return $this->projectId;
     }
 }
