@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
-use App\Entity\Developer;
 use Doctrine\ORM\EntityRepository;
 
 class DeveloperRepository extends EntityRepository
