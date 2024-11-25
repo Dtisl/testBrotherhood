@@ -42,18 +42,21 @@ class Developer
     public function setFullName(string $fullName): self
     {
         $this->fullName = $fullName;
+
         return $this;
     }
 
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
         return $this;
     }
 
     public function setPosition(string $position): self
     {
         $this->position = $position;
+
         return $this;
     }
 
@@ -61,12 +64,14 @@ class Developer
     public function setContactPhone(string $contactPhone): self
     {
         $this->contactPhone = $contactPhone;
+
         return $this;
     }
 
     public function setProject(?Project $project): self
     {
         $this->project = $project;
+
         return $this;
     }
 }

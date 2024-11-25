@@ -38,12 +38,14 @@ class Project
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
     public function setCustomer(string $customer): self
     {
         $this->customer = $customer;
+
         return $this;
     }
 
